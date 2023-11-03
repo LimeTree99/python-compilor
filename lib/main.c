@@ -36,10 +36,11 @@ int main(int argc, char *argv[]){
     char buff1[buff_size];
     char buff2[buff_size];
 
+    log_init();
     _log(LOG_I, "Start\n");
     if (argc > 1){
         //input
-        printf("importing %s\n", argv[1]);
+        _log(LOG_I, "importing %s\n", argv[1]);
         imp_file(buff1, buff_size, argv[1]);
         printf(buff1);
     }

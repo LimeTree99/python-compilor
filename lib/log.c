@@ -1,18 +1,20 @@
 #include "log.h"
 
-volatile FILE *LOG_OUT[] = {stdout, stdout, stdout, stdout, stdout, stdout};
 char LOG_CHAR[] = {'E','F','W','I','D','T'};
+
+void log_init(){
+    for (int i=0; i < 6; i++){
+        LOG_OUT[i] = stdout;
+    }
+}
 
 void _log(LOG_LEVEL level, char *string, ...){
     va_list args;
     va_start(args, string);
-    char *pr;
-
+    char pr[400];
     FILE *out = LOG_OUT[level];
-
-    memcpy(pr, LOG_CHAR+level, 1);
-
-    strcat(pr, string);
+    
+    sprintf(pr, "\t%c:\t%s", LOG_CHAR[level], string);
     
     vfprintf(out, pr, args);
     

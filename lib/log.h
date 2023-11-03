@@ -1,8 +1,8 @@
 #include "imports.h"
 
-FILE *LOG_OUT[];
+FILE *LOG_OUT[6];
 
-char LOG_CHAR[];
+char LOG_CHAR[6];
 
 typedef enum LOG_LEVEL{
     LOG_F,
@@ -12,6 +12,8 @@ typedef enum LOG_LEVEL{
     LOG_D,
     LOG_T,
 }LOG_LEVEL;
+
+void log_init();
 
 void _log(LOG_LEVEL level, char *string, ...);
 
