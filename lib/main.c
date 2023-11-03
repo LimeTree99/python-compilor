@@ -34,10 +34,16 @@ void imp_file(char *buff, int size, char file_name[]){
 }
 
 int main(int argc, char *argv[]){
+    static int buff_size = 1048;
+    char buff1[buff_size];
+    char buff2[buff_size];
+
     log_init();
-    String *a = string("number %d", 1);
-    String *b = string("letter %c", 'a');
-    str_cat(a, string("-"));
-    str_cat(a, b);
-    printl(a);
+    _log(LOG_I, "Start\n");
+    if (argc > 1){
+        //input
+        _log(LOG_I, "importing %s\n", argv[1]);
+        imp_file(buff1, buff_size, argv[1]);
+        printf(buff1);
+    }
 }
