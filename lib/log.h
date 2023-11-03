@@ -1,4 +1,4 @@
-#include "imports.h"
+#include "string.h"
 
 FILE *LOG_OUT[6];
 

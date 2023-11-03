@@ -2,7 +2,8 @@ OUT = pycomp.exe
 
 FILES = lib/main.c \
 		lib/regex.c\
-		lib/log.c
+		lib/log.c\
+		lib/string.c
 
 CC = gcc
 

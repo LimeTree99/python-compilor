@@ -14,7 +14,7 @@ void _log(LOG_LEVEL level, char *string, ...){
     char pr[400];
     FILE *out = LOG_OUT[level];
     
-    sprintf(pr, "\t%c:\t%s", LOG_CHAR[level], string);
+    sprintf(pr, "\t%c:\t%s\n", LOG_CHAR[level], string);
     
     vfprintf(out, pr, args);
     
