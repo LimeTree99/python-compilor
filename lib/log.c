@@ -8,17 +8,19 @@ void log_init(){
     }
 }
 
-void _log(LOG_LEVEL level, char *string, ...){
-    va_list args;
-    va_start(args, string);
+void _logs(LOG_LEVEL level, String *str){
     char pr[400];
     FILE *out = LOG_OUT[level];
     
-    sprintf(pr, "\t%c:\t%s\n", LOG_CHAR[level], string);
+    sprintf(pr, "\t%c:\t%s\n", LOG_CHAR[level], str->string);
     
-    vfprintf(out, pr, args);
-    
-    va_end(args);
+    fprintf(out, pr);
+    str_free(str);
+}
+
+void _log(LOG_LEVEL level, char *str, ...){
+    va_list args;
+    _logs(level, string(str, args));
 }
 
 void set_log_out(LOG_LEVEL level, FILE *out){

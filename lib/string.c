@@ -48,6 +48,20 @@ void str_cat(String *str1, String *str2){
     str1->size += str2->size; 
 }
 
+String *str_cp(String *str){
+    String *new = malloc(sizeof(string));
+    new->size = str->size;
+    new->string = malloc(sizeof(char) * (str->size + 1));
+
+    for (int i=0; i<str->size; i++){
+        *(new->string + i) = *(str->string + i);
+    }
+
+    *(new->string + new->size) = '\0';
+
+    return new;
+}
+
 void str_free(String *str){
     free(str->string);
     free(str);

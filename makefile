@@ -11,9 +11,10 @@ TEST_MAIN = test/main.c
 
 
 CC = gcc
+FLAGS = -g
 
-compile = $(CC) $(MAIN) $(LIB) -o $(OUT)
-compile_test = $(CC) $(TEST_MAIN) $(LIB) -o test/$(OUT)
+compile = $(CC) $(FLAGS) $(MAIN) $(LIB) -o $(OUT)
+compile_test = $(CC) $(FLAGS) $(TEST_MAIN) $(LIB) -o test/$(OUT)
 
 
 make:

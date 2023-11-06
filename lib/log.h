@@ -15,6 +15,10 @@ typedef enum LOG_LEVEL{
 
 void log_init();
 
+//log using regular c strings
 void _log(LOG_LEVEL level, char *string, ...);
+
+//log using String struct
+void _logs(LOG_LEVEL level, String *string);
 
 void set_log_out(LOG_LEVEL level, FILE *out);

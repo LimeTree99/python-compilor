@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+/*
+All the external libraries that the /lib library needs.
+As well as any default variables used by the /lib
+*/
+
 typedef enum bool{
     false=0,
     true=1

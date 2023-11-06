@@ -1,16 +1,5 @@
 #include "lib.h"
 
-/*
-order:
-    main
-    regex
-    log
-    string
-    imports
-*/
-
-
-
 
 void lex(){
 
@@ -42,7 +31,8 @@ int main(int argc, char *argv[]){
     _log(LOG_I, "Start\n");
     if (argc > 1){
         //input
-        _log(LOG_I, "importing %s\n", argv[1]);
+        _log(LOG_I, "importing %s", argv[1]);
+        _logs(LOG_I, string("thing"));
         imp_file(buff1, buff_size, argv[1]);
         printf(buff1);
     }
