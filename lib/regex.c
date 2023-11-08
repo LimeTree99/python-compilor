@@ -99,5 +99,4 @@ String *parse_regex(regmat *mat, String *str){
         cur++;
     }
     return str_cp( *(mat->ends+prev_node) );
-    
 }
