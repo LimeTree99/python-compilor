@@ -23,12 +23,12 @@ types:
         
 */
 
-regmat *gen_regex_matrix(String *regex, String *name){
+regmat *gen_regex_matrix(char *regex, char *name){
     regmat *mat = malloc(sizeof(regmat));
     char cur;
     int n;
     mat->char_size = CHARSET_SIZE;
-    mat->num_nodes = regex->size;
+    mat->num_nodes = strlen(regex);
     mat->size = mat->char_size * mat->num_nodes;
     mat->mat = (int*)malloc(sizeof(int) * mat->size);
     mat->ends = (String**)calloc(sizeof(String*), mat->num_nodes);
@@ -38,15 +38,15 @@ regmat *gen_regex_matrix(String *regex, String *name){
         *(mat->mat + i) = -1;
     }
 
-    _logs(LOG_I, str_cp(regex));
+    _log(LOG_I, "regex input %s", regex);
 
     n=0;
-    while (n<regex->size){
-        cur = *(regex->string + n);
+    while (n<mat->num_nodes){
+        cur = *(regex + n);
         if (cur == '\\'){
             //advance to next letter
             n++;
-            cur = *(regex->string + n);
+            cur = *(regex + n);
             if (cur == '\\'){
                 *(mat->mat + (n * mat->char_size) + cur) = n+1;
             }else if (cur == 'n'){
@@ -87,8 +87,8 @@ regmat *gen_regex_matrix(String *regex, String *name){
     return mat;
 }
 
-String *parse_regex(regmat *mat, String *str){
-    char *cur = str->string;
+char *parse_regex(regmat *mat, char *str){
+    char *cur = str;
     int prev_node = -1;
     int node = 0;
 
@@ -98,5 +98,5 @@ String *parse_regex(regmat *mat, String *str){
 
         cur++;
     }
-    return str_cp( *(mat->ends+prev_node) );
+    return memcpy(malloc(sizeof(char) * strlen(mat->ends+prev_node), mat->ends+prev_node, strlen(mat->ends+prev_node))) ;
 }

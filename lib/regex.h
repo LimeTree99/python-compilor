@@ -8,8 +8,8 @@ typedef struct regmat{
     int char_size;
     int num_nodes;
     int *mat;
-    String **ends;      
+    char **ends;      
 }regmat;
 
-regmat *gen_regex_matrix(String *regex, String *name);
-String *parse_regex(regmat *mat, String *str);
+regmat *gen_regex_matrix(char *regex, char *name);
+char *parse_regex(regmat *mat, char *str);
