@@ -31,7 +31,7 @@ regmat *gen_regex_matrix(char *regex, char *name){
     mat->num_nodes = strlen(regex);
     mat->size = mat->char_size * mat->num_nodes;
     mat->mat = (int*)malloc(sizeof(int) * mat->size);
-    mat->ends = (String**)calloc(sizeof(String*), mat->num_nodes);
+    mat->ends = (char**)calloc(sizeof(char*), mat->num_nodes);
 
     //set all of mat to default -1
     for (int i=0; i<mat->size; i++){
@@ -82,7 +82,8 @@ regmat *gen_regex_matrix(char *regex, char *name){
     n--;
     //reset end node to -1
     *(mat->mat + (n * mat->char_size) + cur) = -1; 
-    *(mat->ends + n) = str_cp(name);
+    *(mat->ends + n) = (char*)malloc(sizeof(char) * (strlen(name) + 1));
+    strcpy(*(mat->ends + n), name);
 
     return mat;
 }
@@ -91,6 +92,7 @@ char *parse_regex(regmat *mat, char *str){
     char *cur = str;
     int prev_node = -1;
     int node = 0;
+    char *re;
 
     while (*cur != '\0' && node != -1){
         prev_node = node;        
@@ -98,5 +100,7 @@ char *parse_regex(regmat *mat, char *str){
 
         cur++;
     }
-    return memcpy(malloc(sizeof(char) * strlen(mat->ends+prev_node), mat->ends+prev_node, strlen(mat->ends+prev_node))) ;
+    re = (char*)malloc(sizeof(char) * (strlen(*(mat->ends+prev_node)) + 1));
+    strcpy(re, *(mat->ends+prev_node));
+    return re;
 }

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <windows.h>
 
 /*
 All the external libraries that the /lib library needs.

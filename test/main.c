@@ -15,11 +15,20 @@ int main(int argc, char *argv[]){
 
 void test_regex(){
     //note the memory leek with unfreed strings
-    regmat *a = gen_regex_matrix(string("aab"), string("testlaksjfh(o^o)"));
-    String *result = parse_regex(a, string("aab"));
-    _log(LOG_D, result->string);
+    regmat *a;
+    char *result;
+    char test_str[100];
+    char test_reg[100];
+    char test_name[100];
 
-    a = gen_regex_matrix(string("print(\\d)"), string("print-dig"));
-    result = parse_regex(a, string("print(8)"));
-    _log(LOG_D, result->string);
+    strcpy(test_reg, "aab");
+    strcpy(test_name, "t01");
+    strcpy(test_str, "aab");
+    a = gen_regex_matrix("aab", "testlaksjfh(o^o)");
+    result = parse_regex(a, "aab");
+    _log(LOG_D, result);
+
+    a = gen_regex_matrix("print(\\d)", "print-dig");
+    result = parse_regex(a, "print(8)");
+    _log(LOG_D, result);
 }
