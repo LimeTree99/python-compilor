@@ -25,7 +25,7 @@ types:
 
 regmat *gen_regex_matrix(char *regex, char *name){
     regmat *mat = malloc(sizeof(regmat));
-    char cur;
+    char *cur;
     int n;
     mat->char_size = CHARSET_SIZE;
     mat->num_nodes = strlen(regex);
@@ -33,55 +33,56 @@ regmat *gen_regex_matrix(char *regex, char *name){
     mat->mat = (int*)malloc(sizeof(int) * mat->size);
     mat->ends = (char**)calloc(sizeof(char*), mat->num_nodes);
 
-    //set all of mat to default -1
-    for (int i=0; i<mat->size; i++){
+    //set all of mat to default -1 and ends with defalt '\0'
+    for (int i=0; i<mat->num_nodes; i++){
         *(mat->mat + i) = -1;
+        *(mat->ends + i) = (char*)malloc(sizeof(char));
+        **(mat->ends + i) = '\0';
     }
 
-    _log(LOG_I, "regex input %s", regex);
-
     n=0;
+    cur = regex;
     while (n<mat->num_nodes){
-        cur = *(regex + n);
-        if (cur == '\\'){
+        if (*cur == '\\'){
+            
             //advance to next letter
-            n++;
-            cur = *(regex + n);
-            if (cur == '\\'){
-                *(mat->mat + (n * mat->char_size) + cur) = n+1;
-            }else if (cur == 'n'){
+            cur = cur+1;
+            if (*cur == '\\'){
+                *(mat->mat + (n * mat->char_size) + *cur) = n+1;
+            }else if (*cur == 'n'){
                 *(mat->mat + (n * mat->char_size) + '\n') = n+1;
-            }else if (cur == 't'){
+            }else if (*cur == 't'){
                 *(mat->mat + (n * mat->char_size) + '\t') = n+1;
-            }else if (cur == 'w'){
+            }else if (*cur == 'w'){
                 for (int i='a'; i<='z';i++){
                     *(mat->mat + (n * mat->char_size) + i) = n+1;
                 }
                 for (int i='A'; i<='Z';i++){
                     *(mat->mat + (n * mat->char_size) + i) = n+1;
                 }
-            }else if (cur == 'd'){
+            }else if (*cur == 'd'){
                 for (int i='0'; i<='9';i++){
                     *(mat->mat + (n * mat->char_size) + i) = n+1;
                 }
             }
 
-        }else if (cur == '*'){
+        }else if (*cur == '*'){
 
-        }else if (cur == '+'){
+        }else if (*cur == '+'){
 
-        }else if (cur == '|'){
+        }else if (*cur == '|'){
             
         }else{
             //point the character in array to next unfilled node
-            *(mat->mat + (n * mat->char_size) + cur) = n+1;
+            *(mat->mat + (n * mat->char_size) + *cur) = n+1;
         }
+        cur = cur + 1;
         n++;
     }
     //n now is last node index
     n--;
     //reset end node to -1
-    *(mat->mat + (n * mat->char_size) + cur) = -1; 
+    *(mat->mat + (n * mat->char_size) + *cur) = -1;
     *(mat->ends + n) = (char*)malloc(sizeof(char) * (strlen(name) + 1));
     strcpy(*(mat->ends + n), name);
 
@@ -95,12 +96,13 @@ char *parse_regex(regmat *mat, char *str){
     char *re;
 
     while (*cur != '\0' && node != -1){
-        prev_node = node;        
+        prev_node = node;
         node = *(mat->mat + node * mat->char_size + *cur);
-
         cur++;
     }
+
     re = (char*)malloc(sizeof(char) * (strlen(*(mat->ends+prev_node)) + 1));
     strcpy(re, *(mat->ends+prev_node));
+    
     return re;
 }

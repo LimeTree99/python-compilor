@@ -1,19 +1,21 @@
 #include "../lib/lib.h"
 
 
-void test_regex();
+void test_gen_regex_matrix();
 
 
 int main(int argc, char *argv[]){
     log_init();
 
+    printf("============\n");
     printf("Test regex.c\n");
-    test_regex();
+    printf("============\n");
+    test_gen_regex_matrix();
 
     return 0;
 }
 
-void test_regex(){
+void test_gen_regex_matrix(){
     //note the memory leek with unfreed strings
     regmat *a;
     char *result;
@@ -21,14 +23,23 @@ void test_regex(){
     char test_reg[100];
     char test_name[100];
 
+    printf("---------------------\n");
+    printf("Test gen_regex_matrix\n");
+    printf("---------------------\n");
+
     strcpy(test_reg, "aab");
     strcpy(test_name, "t01");
     strcpy(test_str, "aab");
-    a = gen_regex_matrix("aab", "testlaksjfh(o^o)");
-    result = parse_regex(a, "aab");
-    _log(LOG_D, result);
+    a = gen_regex_matrix(test_reg, test_name);
+    result = parse_regex(a, test_str);
+    _log(LOG_D, "test reg <%s> test str <%s> result <%s>", test_reg, test_str, result);
+    free(a);
+    free(result);
 
-    a = gen_regex_matrix("print(\\d)", "print-dig");
-    result = parse_regex(a, "print(8)");
-    _log(LOG_D, result);
+    strcpy(test_reg, "print(\\d)");
+    strcpy(test_name, "t02");
+    strcpy(test_str, "print(9)");
+    a = gen_regex_matrix(test_reg, test_name);
+    result = parse_regex(a, test_str);
+    _log(LOG_D, "test reg <%s> test str <%s> result <%s>", test_reg, test_str, result);
 }
