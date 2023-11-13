@@ -83,6 +83,7 @@ regmat *gen_regex_matrix(char *regex, char *name){
     n--;
     //reset end node to -1
     *(mat->mat + (n * mat->char_size) + *cur) = -1;
+    free(*(mat->ends) + n);
     *(mat->ends + n) = (char*)malloc(sizeof(char) * (strlen(name) + 1));
     strcpy(*(mat->ends + n), name);
 
@@ -106,3 +107,4 @@ char *parse_regex(regmat *mat, char *str){
     
     return re;
 }
+
