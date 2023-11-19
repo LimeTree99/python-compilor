@@ -2,10 +2,18 @@
 
 
 /*
+Overview:
+    THIS IS NOT REGEX!!!!
+    Terrible naming I know. A dfa is created from the parse string NOT an NFA.
+    This means that there can be no non deterministic behavior in the parse 
+    string.  
 example regex:
     abc
     a*b
     A+b
+example invalaid strings:
+    a*a     ->  this is not deterministic, where's the exit point from 'a' char?
+    a*\w    ->  same as above
 regex fetures:
     *   repeat 0 or infinite times
 
@@ -31,26 +39,39 @@ regmat *gen_regex_matrix(char *regex, char *name){
     mat->num_nodes = strlen(regex);
     mat->size = mat->char_size * mat->num_nodes;
     mat->mat = (int*)malloc(sizeof(int) * mat->size);
-    mat->ends = (char**)calloc(sizeof(char*), mat->num_nodes);
-
+    mat->ends = (char**)malloc(sizeof(char*) * mat->num_nodes);
+    
+    //set default value for return name
+    for (int i=0; i<mat->num_nodes; i++){        
+        mat->ends[i] = (char*)malloc(sizeof(char)*10);
+        strcpy(mat->ends[i], "");
+    }
+    
     //set all of mat to default -1 and ends with defalt '\0'
-    for (int i=0; i<mat->num_nodes; i++){
+    for (int i=0; i<mat->size; i++){
         *(mat->mat + i) = -1;
-        *(mat->ends + i) = (char*)malloc(sizeof(char));
-        **(mat->ends + i) = '\0';
     }
 
     n=0;
     cur = regex;
-    while (n<mat->num_nodes){
+    while (*cur != '\0'){
         if (*cur == '\\'){
-            
             //advance to next letter
             cur = cur+1;
             if (*cur == '\\'){
                 *(mat->mat + (n * mat->char_size) + *cur) = n+1;
             }else if (*cur == 'n'){
                 *(mat->mat + (n * mat->char_size) + '\n') = n+1;
+            }else if (*cur == '('){
+                *(mat->mat + (n * mat->char_size) + '(') = n+1;
+            }else if (*cur == ')'){
+                *(mat->mat + (n * mat->char_size) + ')') = n+1;
+            }else if (*cur == '*'){
+                *(mat->mat + (n * mat->char_size) + '*') = n+1;
+            }else if (*cur == '+'){
+                *(mat->mat + (n * mat->char_size) + '+') = n+1;
+            }else if (*cur == '|'){
+                *(mat->mat + (n * mat->char_size) + '|') = n+1;
             }else if (*cur == 't'){
                 *(mat->mat + (n * mat->char_size) + '\t') = n+1;
             }else if (*cur == 'w'){
@@ -65,12 +86,22 @@ regmat *gen_regex_matrix(char *regex, char *name){
                     *(mat->mat + (n * mat->char_size) + i) = n+1;
                 }
             }
-
         }else if (*cur == '*'){
-
+            //go back to the prev node and have it loop to itself
+            n--;
+            *(mat->mat + (n * mat->char_size) + *(cur-1)) = n;
+            //if not at the end go back one so next char will be written to 
+            //this node
+            if (*(cur+1) != '\0'){
+                n--;
+            }
         }else if (*cur == '+'){
-
+            
         }else if (*cur == '|'){
+
+        }else if (*cur == ')'){
+
+        }else if (*cur == '('){
             
         }else{
             //point the character in array to next unfilled node
@@ -82,10 +113,10 @@ regmat *gen_regex_matrix(char *regex, char *name){
     //n now is last node index
     n--;
     //reset end node to -1
-    *(mat->mat + (n * mat->char_size) + *cur) = -1;
-    free(*(mat->ends) + n);
-    *(mat->ends + n) = (char*)malloc(sizeof(char) * (strlen(name) + 1));
-    strcpy(*(mat->ends + n), name);
+    *(mat->mat + (n * mat->char_size) + *(cur - 1)) = -1;
+    free(mat->ends[n]);
+    mat->ends[n] = (char*)malloc(sizeof(char) * (strlen(name) + 1));
+    strcpy(mat->ends[n], name);
 
     return mat;
 }
@@ -99,11 +130,21 @@ char *parse_regex(regmat *mat, char *str){
     while (*cur != '\0' && node != -1){
         prev_node = node;
         node = *(mat->mat + node * mat->char_size + *cur);
+        //printf("char: %c prev_node: %d node: %d\n", *cur, prev_node, node);
         cur++;
+        
     }
-
-    re = (char*)malloc(sizeof(char) * (strlen(*(mat->ends+prev_node)) + 1));
-    strcpy(re, *(mat->ends+prev_node));
+    
+    if (*cur == '\0'){
+        re = (char*)malloc(sizeof(char) * (strlen( mat->ends[prev_node] ) + 1));
+        strcpy(re, mat->ends[prev_node]);
+    }else{
+        //not at end of string, fail
+        re = (char*)malloc(sizeof(char) * 3);
+        strcpy(re, "\0");
+    }
+    
+    
     
     return re;
 }

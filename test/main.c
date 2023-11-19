@@ -19,27 +19,25 @@ void test_gen_regex_matrix(){
     //note the memory leek with unfreed strings
     regmat *a;
     char *result;
-    char test_str[100];
-    char test_reg[100];
-    char test_name[100];
+    int test_len = 5;
+    char *test_reg[] =  {"aab",     "aab",      "aab",      "print\\(\\d\\)",   "a*b"};
+    char *test_str[] =  {"aab",     "aabx",     "a",        "print(9)",         "aaaab"};
+    char *test_name[] = {"a",       "a",        "a",        "a",                "a"};
+    char *exp_result[] = {"a",      "",         "",         "a",                "a"};
+    printf("-----------------------------------------\n");
+    printf("Test gen_regex_matrix() and parse_regex()\n");
+    printf("-----------------------------------------\n");
 
-    printf("---------------------\n");
-    printf("Test gen_regex_matrix\n");
-    printf("---------------------\n");
+    for (int i=0; i<test_len; i++){
+        a = gen_regex_matrix(test_reg[i], test_name[i]);
+        result = parse_regex(a, test_str[i]);
+        _log(LOG_D, "test reg <%s> test str <%s> result <%s>", 
+                test_reg[i], test_str[i], result);
+        if (strcmp(result, exp_result[i])){
+            _log(LOG_W, "incorrect result for test reg <%s> and test str <%s>", test_reg[i], test_str[i]);
+        }
+        free(a);
+        free(result);
+    }
 
-    strcpy(test_reg, "aab");
-    strcpy(test_name, "t01");
-    strcpy(test_str, "aab");
-    a = gen_regex_matrix(test_reg, test_name);
-    result = parse_regex(a, test_str);
-    _log(LOG_D, "test reg <%s> test str <%s> result <%s>", test_reg, test_str, result);
-    free(a);
-    free(result);
-
-    strcpy(test_reg, "print(\\d)");
-    strcpy(test_name, "t02");
-    strcpy(test_str, "print(9)");
-    a = gen_regex_matrix(test_reg, test_name);
-    result = parse_regex(a, test_str);
-    _log(LOG_D, "test reg <%s> test str <%s> result <%s>", test_reg, test_str, result);
 }
