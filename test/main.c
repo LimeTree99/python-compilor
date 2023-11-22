@@ -10,6 +10,8 @@ int main(int argc, char *argv[]){
     printf("============\n");
     printf("Test regex.c\n");
     printf("============\n");
+    imp_testf("test/inp/regex.txt", " \t");
+    
     test_gen_regex_matrix();
 
     return 0;

@@ -8,7 +8,7 @@ It creates a clear entry point to the library. All layout of
 import order:
     lib
     regex
+    parse_settings
     log
-    string
     imports
 */

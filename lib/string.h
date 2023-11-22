@@ -2,8 +2,10 @@
 
 /*
 a library for manipulating strings
+depreciated
 */
 
+/*
 
 typedef struct String{
     int size;
@@ -17,3 +19,5 @@ int str_len(String *str);
 void str_cat(String *str1, String *str2);
 String *str_cp(String *str);
 void str_free(String *str);
+
+*/

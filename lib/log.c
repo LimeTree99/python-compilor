@@ -1,13 +1,13 @@
 #include "log.h"
 
-char LOG_CHAR[] = {'E','F','W','I','D','T'};
+char LOG_CHAR[] = {'F','E','W','I','D','T'};
 
 void log_init(){
     for (int i=0; i < 6; i++){
         LOG_OUT[i] = stdout;
     }
     LOG_COLOR[0] = FOREGROUND_RED;
-    LOG_COLOR[1] = FOREGROUND_GREEN;
+    LOG_COLOR[1] = FOREGROUND_RED;
     LOG_COLOR[2] = FOREGROUND_GREEN;
     LOG_COLOR[3] = FOREGROUND_GREEN;
     LOG_COLOR[4] = FOREGROUND_GREEN;

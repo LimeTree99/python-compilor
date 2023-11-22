@@ -1,0 +1,5 @@
+regex   test_str    name    out 
+aab     aab         a       a
+aab     a           a       \0
+aab     aabx        a       \0
+end     end         end     end

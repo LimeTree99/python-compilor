@@ -2,7 +2,7 @@ OUT = pycomp.exe
 
 LIB = lib/regex.c\
 		lib/log.c\
-		lib/string.c
+		lib/parse_settings.c
 
 MAIN = lib/main.c
 

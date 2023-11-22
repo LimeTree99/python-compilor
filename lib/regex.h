@@ -1,6 +1,6 @@
 /** \file */
 
-#include "log.h"
+#include "parse_settings.h"
 
 #define CHARSET_SIZE 255
 
