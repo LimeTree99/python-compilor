@@ -2,6 +2,9 @@
 
 /*
 
+issues:
+- file can not have trailing /n
+
 ***dataframe->columns ->   **c1      c2      c3
                             |       |       |
                             *item
@@ -77,8 +80,7 @@ datafrm *imp_testf(char file_name[], const char *delin){
                         *word_cur = cur;
                         word_cur++;                        
                     }while(!instr(cur, delin));
-                    *word_cur = '\0';
-                    
+                    *word_cur = '\0';                   
                     
                     column++;
                     word_size = 0;
@@ -107,7 +109,7 @@ datafrm *imp_testf(char file_name[], const char *delin){
             
             if (( instr(cur, delin) && !instr(prev, delin) ) || cur == '\n' || cur == EOF){
                 //end of word commit word size
-                _log(LOG_I, "column <%d> row<%d> word_size <%d>", column, row, word_size);
+                //_log(LOG_I, "column <%d> row<%d> word_size <%d>", column, row, word_size);
                 *(*(re->columns + column) + row)  = (char*)malloc(sizeof(char) * (word_size+1));
                 
                 fsetpos(fh, &pos);
@@ -119,6 +121,11 @@ datafrm *imp_testf(char file_name[], const char *delin){
                     word_cur++;                    
                 }while(!instr(cur, delin) && cur != '\n' && cur != EOF);
                 *(word_cur-1) = '\0';
+                
+                if (0 == strcmp(*(*(re->columns + column) + row), "\\0")){
+                    printf("a\n");
+                    **(*(re->columns + column) + row) = '\0';
+                }
                 
                 
                 if (cur == '\n'){
@@ -184,10 +191,6 @@ void display_frame(datafrm *frame){
     for (int i=0; i < frame->width; i++){
         printf("%s ", *(frame->names+i));
     }
-    printf("\n");
-    
-    //test
-    printf("last element: <%s>", *(*(frame->columns + 3) + 1) );
     printf("\n");   
     
     //print columns

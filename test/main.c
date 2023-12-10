@@ -23,10 +23,10 @@ void test_gen_regex_matrix(){
     char *result;
     int test_len = 5;
     datafrm *frame = imp_testf("test/inp/regex.txt", " \t");
-    char *test_reg[] =  {"aab",     "aab",      "aab",      "print\\(\\d\\)",   "a*b"};
-    char *test_str[] =  {"aab",     "aabx",     "a",        "print(9)",         "aaaab"};
-    char *test_name[] = {"a",       "a",        "a",        "a",                "a"};
-    char *exp_result[] = {"a",      "",         "",         "a",                "a"};
+    char **test_reg = *(frame->columns + 0);
+    char **test_str = *(frame->columns + 1);
+    char **test_name = *(frame->columns + 2);
+    char **exp_result = *(frame->columns + 3);    
     
     printf("-----------------------------------------\n");
     display_frame(frame);   
