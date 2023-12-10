@@ -66,11 +66,10 @@ datafrm *imp_testf(char file_name[], const char *delin){
             cur = fgetc(fh);
             
             if (instr(cur, delin) && !instr(prev, delin)){
-                    //end of word commit word size
-                    printf("%d\n", word_size);
-                    
+                    //end of word commit word size                    
                     *(re->names + column) = (char*)malloc(sizeof(char) * (word_size+1));
                     fsetpos(fh, &pos);
+                    fseek(fh, -1, SEEK_CUR);
                     
                     word_cur = *(re->names + column);
                     do{
@@ -97,42 +96,48 @@ datafrm *imp_testf(char file_name[], const char *delin){
         for (int i=0; i<re->width; i++){
             *(re->columns + i) = (char**)malloc(sizeof(char*) * re->height);
         }
+        
+        _log(LOG_I, "width <%d>, height <%d>", re->width, re->height);
+        
         column = 0;
         row = 0;
         do{
             prev = cur;
             cur = fgetc(fh);
             
-            if (( instr(cur, delin) && !instr(prev, delin) ) || cur == '\n'){
-                    //end of word commit word size
-                    _log(LOG_I, "column <%d> row<%d> word_size <%d>", column, row, word_size);
-                    *(*(re->columns + column) + row)  = (char*)malloc(sizeof(char) * (word_size+1));
-                    
-                    fsetpos(fh, &pos);
-                    
-                    word_cur = *(*(re->columns + column) + row);
-                    do{
-                        cur = fgetc(fh);
-                        *word_cur = cur;
-                        word_cur++;                        
-                    }while(!instr(cur, delin) && cur != '\n');
-                    *word_cur = '\0';
-                    
-                    
-                    if (cur == '\n'){
-                        //reset for next row
-                        *(re->columns + column) = (char**)malloc(sizeof(char*) * re->width);
-                        row++;
-                        column = 0;
-                    }else{
-                        column++;
-                    }
-                    
-                    word_size = 0;
+            if (( instr(cur, delin) && !instr(prev, delin) ) || cur == '\n' || cur == EOF){
+                //end of word commit word size
+                _log(LOG_I, "column <%d> row<%d> word_size <%d>", column, row, word_size);
+                *(*(re->columns + column) + row)  = (char*)malloc(sizeof(char) * (word_size+1));
+                
+                fsetpos(fh, &pos);
+                
+                word_cur = *(*(re->columns + column) + row);
+                do{
+                    cur = fgetc(fh);
+                    *word_cur = cur;
+                    word_cur++;                    
+                }while(!instr(cur, delin) && cur != '\n' && cur != EOF);
+                *(word_cur-1) = '\0';
+                
+                
+                if (cur == '\n'){
+                    //reset for next row
+                    //*(re->columns + column) = (char**)malloc(sizeof(char*) * re->width);
+                    row++;
+                    column = 0;
+                }else{
+                    column++;
+                }
+                word_size = 0;
                     
             }else if (!instr(cur, delin)){
                 if (word_size == 0){
+                    //go back to the start of the word to record the position
+                    //then go back
+                    fseek(fh, -1, SEEK_CUR);
                     fgetpos(fh, &pos);
+                    fgetc(fh);
                 }
                 word_size++;
             }
@@ -144,8 +149,6 @@ datafrm *imp_testf(char file_name[], const char *delin){
         //there was an error
         _log(LOG_E, "Error loading file <%s>", file_name);
     }
-    
-    _log(LOG_I, "width <%d>, height <%d>", re->width, re->height);
     
     free(buff);    
     return re;
@@ -174,4 +177,25 @@ int fnum_lines(FILE *fh){
     fsetpos(fh, &pos);
     
     return size;
+}
+
+void display_frame(datafrm *frame){
+    //print names
+    for (int i=0; i < frame->width; i++){
+        printf("%s ", *(frame->names+i));
+    }
+    printf("\n");
+    
+    //test
+    printf("last element: <%s>", *(*(frame->columns + 3) + 1) );
+    printf("\n");   
+    
+    //print columns
+    for (int row=0; row<frame->height; row++){
+        //printf("<%s>", *(*((*frame->columns)+ 0) + row) );
+        for (int col=0; col < frame->width; col++){
+            printf("<%s> ", *(*(frame->columns + col) + row) );
+        }
+        printf("\n");
+    }
 }

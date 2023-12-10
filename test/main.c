@@ -10,7 +10,7 @@ int main(int argc, char *argv[]){
     printf("============\n");
     printf("Test regex.c\n");
     printf("============\n");
-    imp_testf("test/inp/regex.txt", " \t");
+    
     
     test_gen_regex_matrix();
 
@@ -22,10 +22,15 @@ void test_gen_regex_matrix(){
     regmat *a;
     char *result;
     int test_len = 5;
+    datafrm *frame = imp_testf("test/inp/regex.txt", " \t");
     char *test_reg[] =  {"aab",     "aab",      "aab",      "print\\(\\d\\)",   "a*b"};
     char *test_str[] =  {"aab",     "aabx",     "a",        "print(9)",         "aaaab"};
     char *test_name[] = {"a",       "a",        "a",        "a",                "a"};
     char *exp_result[] = {"a",      "",         "",         "a",                "a"};
+    
+    printf("-----------------------------------------\n");
+    display_frame(frame);   
+    
     printf("-----------------------------------------\n");
     printf("Test gen_regex_matrix() and parse_regex()\n");
     printf("-----------------------------------------\n");
