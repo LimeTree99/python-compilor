@@ -55,6 +55,7 @@ regmat *gen_regex_matrix(char *regex, char *name){
     n=0;
     cur = regex;
     while (*cur != '\0'){
+        //the special character <\> used
         if (*cur == '\\'){
             //advance to next letter
             cur = cur+1;
@@ -87,9 +88,14 @@ regmat *gen_regex_matrix(char *regex, char *name){
                 }
             }
         }else if (*cur == '*'){
-            //go back to the prev node and have it loop to itself
+            //go back to the prev node and have it loop to itself in all 
+            //cases where it goes to the next node.
             n--;
-            *(mat->mat + (n * mat->char_size) + *(cur-1)) = n;
+            for (int i=0; i<mat->char_size; i++){
+                if (*(mat->mat + (n * mat->char_size) + i) != -1){
+                    *(mat->mat + (n * mat->char_size) + i) = n;
+                }
+            }
             //if not at the end go back one so next char will be written to 
             //this node
             if (*(cur+1) != '\0'){
@@ -112,8 +118,10 @@ regmat *gen_regex_matrix(char *regex, char *name){
     }
     //n now is last node index
     n--;
+    _log(LOG_I, "n <%d>",n);
     //reset end node to -1
     *(mat->mat + (n * mat->char_size) + *(cur - 1)) = -1;
+    
     free(mat->ends[n]);
     mat->ends[n] = (char*)malloc(sizeof(char) * (strlen(name) + 1));
     strcpy(mat->ends[n], name);
@@ -132,9 +140,7 @@ char *parse_regex(regmat *mat, char *str){
         node = *(mat->mat + node * mat->char_size + *cur);
         //printf("char: %c prev_node: %d node: %d\n", *cur, prev_node, node);
         cur++;
-        
     }
-    
     if (*cur == '\0'){
         re = (char*)malloc(sizeof(char) * (strlen( mat->ends[prev_node] ) + 1));
         strcpy(re, mat->ends[prev_node]);
@@ -143,9 +149,14 @@ char *parse_regex(regmat *mat, char *str){
         re = (char*)malloc(sizeof(char) * 3);
         strcpy(re, "\0");
     }
-    
-    
-    
     return re;
 }
 
+void free_regex_matrix(regmat *mat){
+    for (int i=0; i<mat->num_nodes; i++){
+        free(mat->ends[i]);
+    }
+    free(mat->ends);
+    free(mat->mat);
+    free(mat);
+}

@@ -89,7 +89,6 @@ datafrm *imp_testf(char file_name[], const char *delin){
                 if (word_size == 0){
                     fgetpos(fh, &pos);
                 }
-                printf("%c", cur);
                 word_size++;
             }
         }while(cur != '\n');
@@ -99,7 +98,7 @@ datafrm *imp_testf(char file_name[], const char *delin){
             *(re->columns + i) = (char**)malloc(sizeof(char*) * re->height);
         }
         
-        _log(LOG_I, "width <%d>, height <%d>", re->width, re->height);
+        //_log(LOG_I, "width <%d>, height <%d>", re->width, re->height);
         
         column = 0;
         row = 0;
@@ -123,7 +122,6 @@ datafrm *imp_testf(char file_name[], const char *delin){
                 *(word_cur-1) = '\0';
                 
                 if (0 == strcmp(*(*(re->columns + column) + row), "\\0")){
-                    printf("a\n");
                     **(*(re->columns + column) + row) = '\0';
                 }
                 

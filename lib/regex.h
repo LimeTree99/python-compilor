@@ -26,3 +26,5 @@ char *parse_regex(regmat *mat, char *str);
 
 //! Parse single character
 int parse_regex_step(regmat *mat, char c, int node);
+
+void free_regex_matrix(regmat *mat);
