@@ -1,4 +1,6 @@
 regex           test_str    name    out 
+a               a           found   found
+a               b           found   \0
 abc             abc         found   found
 abc             abcd        found   \0
 abc             ab          found   \0
@@ -11,6 +13,10 @@ a*b             ba          found   \0
 a*b             aa          found   \0
 a*b             a           found   \0
 a*b             abb         found   \0
+a*b             b           found   found
 a*bb            aabb        found   found
 a*bb            aab         found   \0
 a*bb            aabc        found   \0
+a*bb            aabcd       found   \0
+\w              u           found   found
+\w              !           found   \0

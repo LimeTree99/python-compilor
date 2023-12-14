@@ -6,6 +6,7 @@ void test_gen_regex_matrix();
 
 int main(int argc, char *argv[]){
     log_init();
+    //LOG_OUT[LOG_D] = NULL;
 
     printf("============\n");
     printf("Test regex.c\n");
@@ -41,9 +42,10 @@ void test_gen_regex_matrix(){
                 test_reg[i], test_str[i], result);
         if (strcmp(result, exp_result[i])){
             _log(LOG_W, "incorrect result for reg <%s> and test str <%s>", test_reg[i], test_str[i]);
+            pr_regex_matrix(a);            
         }
+        
         free_regex_matrix(a);
         free(result);
     }
-    
 }

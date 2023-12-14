@@ -36,7 +36,7 @@ regmat *gen_regex_matrix(char *regex, char *name){
     char *cur;
     int n;
     mat->char_size = CHARSET_SIZE;
-    mat->num_nodes = strlen(regex);
+    mat->num_nodes = strlen(regex)+1;
     mat->size = mat->char_size * mat->num_nodes;
     mat->mat = (int*)malloc(sizeof(int) * mat->size);
     mat->ends = (char**)malloc(sizeof(char*) * mat->num_nodes);
@@ -116,11 +116,6 @@ regmat *gen_regex_matrix(char *regex, char *name){
         cur = cur + 1;
         n++;
     }
-    //n now is last node index
-    n--;
-    _log(LOG_I, "n <%d>",n);
-    //reset end node to -1
-    *(mat->mat + (n * mat->char_size) + *(cur - 1)) = -1;
     
     free(mat->ends[n]);
     mat->ends[n] = (char*)malloc(sizeof(char) * (strlen(name) + 1));
@@ -138,18 +133,32 @@ char *parse_regex(regmat *mat, char *str){
     while (*cur != '\0' && node != -1){
         prev_node = node;
         node = *(mat->mat + node * mat->char_size + *cur);
-        //printf("char: %c prev_node: %d node: %d\n", *cur, prev_node, node);
         cur++;
     }
-    if (*cur == '\0'){
-        re = (char*)malloc(sizeof(char) * (strlen( mat->ends[prev_node] ) + 1));
-        strcpy(re, mat->ends[prev_node]);
+    if (*cur == '\0' && node != -1){
+        re = (char*)malloc(sizeof(char) * (strlen( mat->ends[node] ) + 1));
+        strcpy(re, mat->ends[node]);
     }else{
-        //not at end of string, fail
+        //fail
         re = (char*)malloc(sizeof(char) * 3);
         strcpy(re, "\0");
     }
     return re;
+}
+
+void pr_regex_matrix(regmat *mat){
+    for (int y=0; y<mat->num_nodes; y++){
+        printf("<%d>: ", y);
+        for (int x=0; x<mat->char_size; x++){
+            if ( *(mat->mat + (y * mat->char_size) + x) != -1 ){
+                printf("%c->%-2d ",x, *(mat->mat + (y * mat->char_size) + x));
+            }
+        }
+        if (**(mat->ends+y) != '\0'){
+            printf("<%s>", *(mat->ends+y));
+        }
+        printf("\n");
+    }
 }
 
 void free_regex_matrix(regmat *mat){
