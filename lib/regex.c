@@ -59,20 +59,12 @@ regmat *gen_regex_matrix(char *regex, char *name){
         if (*cur == '\\'){
             //advance to next letter
             cur = cur+1;
-            if (*cur == '\\'){
+            if (*cur == '\\' || *cur == '(' || *cur == ')' ||
+                    *cur == '*' || *cur == '+' || *cur == '|' ||
+                    *cur == '?'){
                 *(mat->mat + (n * mat->char_size) + *cur) = n+1;
             }else if (*cur == 'n'){
                 *(mat->mat + (n * mat->char_size) + '\n') = n+1;
-            }else if (*cur == '('){
-                *(mat->mat + (n * mat->char_size) + '(') = n+1;
-            }else if (*cur == ')'){
-                *(mat->mat + (n * mat->char_size) + ')') = n+1;
-            }else if (*cur == '*'){
-                *(mat->mat + (n * mat->char_size) + '*') = n+1;
-            }else if (*cur == '+'){
-                *(mat->mat + (n * mat->char_size) + '+') = n+1;
-            }else if (*cur == '|'){
-                *(mat->mat + (n * mat->char_size) + '|') = n+1;
             }else if (*cur == 't'){
                 *(mat->mat + (n * mat->char_size) + '\t') = n+1;
             }else if (*cur == 'w'){
@@ -101,8 +93,13 @@ regmat *gen_regex_matrix(char *regex, char *name){
             if (*(cur+1) != '\0'){
                 n--;
             }
+        }else if (*cur == '?'){
+            cur = cur + 1;
+            *(mat->mat + (n * mat->char_size) + *cur) = n+1;
+            *(mat->mat + ( (n-1) * mat->char_size) + *cur) = n+1;
         }else if (*cur == '+'){
-            
+            *(mat->mat + (n * mat->char_size) + *(cur-1)) = n;
+            n--;
         }else if (*cur == '|'){
 
         }else if (*cur == ')'){

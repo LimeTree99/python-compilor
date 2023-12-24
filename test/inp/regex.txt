@@ -28,4 +28,12 @@ a*bb            aabcd       found   \0
 
 a?b             ab          found   found
 a?b             b           found   found 
-a?b             xb          found   \0 
+a?b             xb          found   \0      
+
+a+b             ab          found   found
+a+b             aab         found   found
+a+b             b           found   \0 
+a+              aaaa        found   found
+ba+             ba          found   found
+ba+             baaa        found   found 
+ba+             b           found   \0

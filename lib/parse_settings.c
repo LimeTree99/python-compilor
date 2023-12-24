@@ -112,7 +112,7 @@ datafrm *imp_testf(char file_name[], const char *delin){
                     word_size != 0){
                         
                 //end of word commit word size
-                _log(LOG_I, "column <%d> row<%d> word_size <%d>", column, row, word_size);
+                //_log(LOG_I, "column <%d> row<%d> word_size <%d>", column, row, word_size);
                 *(*(re->columns + column) + row)  = (char*)malloc(sizeof(char) * (word_size+1));
                 
                 fsetpos(fh, &pos);

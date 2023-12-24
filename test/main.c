@@ -28,8 +28,8 @@ void test_gen_regex_matrix(){
     char **test_name = *(frame->columns + 2);
     char **exp_result = *(frame->columns + 3);    
     
-    printf("-----------------------------------------\n");
-    display_frame(frame);   
+    //printf("-----------------------------------------\n");
+    //display_frame(frame);   
     
     printf("-----------------------------------------\n");
     printf("Test gen_regex_matrix() and parse_regex()\n");
