@@ -14,6 +14,8 @@ while   while
 do      do
 
 \d*     int
+'\w'    char 
+
 void    t_void
 int     t_int
 char    t_char

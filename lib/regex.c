@@ -101,10 +101,17 @@ regmat *gen_regex_matrix(char *regex, char *name){
             *(mat->mat + (n * mat->char_size) + *(cur-1)) = n;
             n--;
         }else if (*cur == '|'){
-
+            // this will end a recursive call and return the first half 
         }else if (*cur == ')'){
-
+            // this will end a recursive call
+            // note: only used in recursion level > 1
         }else if (*cur == '('){
+            //this will begin a recursive call 
+            
+            // call part 1 until '|' is reached
+            // call part 2 until ')' is reached 
+            
+            // stitch the two parts onto the end of the original 
             
         }else{
             //point the character in array to next unfilled node
