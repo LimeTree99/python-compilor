@@ -29,7 +29,7 @@ void test_gen_regex_matrix(){
     char **exp_result = *(frame->columns + 3);    
     
     printf("-----------------------------------------\n");
-    //display_frame(frame);   
+    display_frame(frame);   
     
     printf("-----------------------------------------\n");
     printf("Test gen_regex_matrix() and parse_regex()\n");

@@ -2,4 +2,18 @@
 =   asn
 >=  le
 <=  gr
+\(  lbr
+\)  rbr
+;   semi
 
+.   dot
+->  arrow
+
+for     for
+while   while
+do      do
+
+\d*     int
+void    t_void
+int     t_int
+char    t_char

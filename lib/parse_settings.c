@@ -106,9 +106,13 @@ datafrm *imp_testf(char file_name[], const char *delin){
             prev = cur;
             cur = fgetc(fh);
             
-            if (( instr(cur, delin) && !instr(prev, delin) ) || cur == '\n' || cur == EOF){
+            if (( (instr(cur, delin) && !instr(prev, delin) ) || 
+                    cur == '\n' || 
+                    cur == EOF) &&
+                    word_size != 0){
+                        
                 //end of word commit word size
-                //_log(LOG_I, "column <%d> row<%d> word_size <%d>", column, row, word_size);
+                _log(LOG_I, "column <%d> row<%d> word_size <%d>", column, row, word_size);
                 *(*(re->columns + column) + row)  = (char*)malloc(sizeof(char) * (word_size+1));
                 
                 fsetpos(fh, &pos);
@@ -120,23 +124,22 @@ datafrm *imp_testf(char file_name[], const char *delin){
                     word_cur++;                    
                 }while(!instr(cur, delin) && cur != '\n' && cur != EOF);
                 *(word_cur-1) = '\0';
-                
                 if (0 == strcmp(*(*(re->columns + column) + row), "\\0")){
                     **(*(re->columns + column) + row) = '\0';
                 }
                 
                 
-                if (cur == '\n'){
+                if (column < re->width-1){
+                    column++;
+                }else{
                     //reset for next row
                     //*(re->columns + column) = (char**)malloc(sizeof(char*) * re->width);
                     row++;
                     column = 0;
-                }else{
-                    column++;
                 }
                 word_size = 0;
                     
-            }else if (!instr(cur, delin)){
+            }else if (!instr(cur, delin) && cur != '\n'){
                 if (word_size == 0){
                     //go back to the start of the word to record the position
                     //then go back
@@ -146,6 +149,7 @@ datafrm *imp_testf(char file_name[], const char *delin){
                 }
                 word_size++;
             }
+            
         }while(cur != EOF);
         
         pclose(fh);
