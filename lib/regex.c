@@ -128,6 +128,10 @@ regmat *gen_regex_matrix(char *regex, char *name){
     return mat;
 }
 
+int stitch_regex_matrix(regmat *mat1, regmat *mat2, int node){
+    
+}
+
 char *parse_regex(regmat *mat, char *str){
     char *cur = str;
     int prev_node = -1;

@@ -7,13 +7,23 @@
 //regex matrix
 typedef struct regmat{
     int size;           //! size to the 2d array mat
-    int char_size;
-    int num_nodes;
-    int *mat;
-    char **ends;      
+    int char_size;      //! defined as size of askii for the mo
+    int num_nodes;      //! number of nodes, there may be extra unused ones 
+    int *mat;           //! 2d array of size char_size X num_nodes 
+    char **ends;        //! 1d array of strings that are the name of the ends
 }regmat;
 
 regmat *gen_regex_matrix(char *regex, char *name);
+
+//! stich one regmat into another
+/*!
+    Stitch mat2 into mat1 at node
+    \param mat1 the matrix to be added onto
+    \param mat2 the matrix to added to mat1
+    \param node the node in mat1 that mat2 will start on
+    \return Error code
+*/
+int stitch_regex_matrix(regmat *mat1, regmat *mat2, int node);
 
 //! thing
 /*! 
