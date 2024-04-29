@@ -31,12 +31,12 @@ types:
         
 */
 
-regmat *gen_regex_matrix(char *regex, char *name){
+
+regmat *init_regmat(int size, int char_size){
     regmat *mat = malloc(sizeof(regmat));
-    char *cur;
-    int n;
-    mat->char_size = CHARSET_SIZE;
-    mat->num_nodes = strlen(regex)+1;
+    
+    mat->char_size = char_size;
+    mat->num_nodes = size;
     mat->size = mat->char_size * mat->num_nodes;
     mat->mat = (int*)malloc(sizeof(int) * mat->size);
     mat->ends = (char**)malloc(sizeof(char*) * mat->num_nodes);
@@ -46,14 +46,25 @@ regmat *gen_regex_matrix(char *regex, char *name){
         mat->ends[i] = (char*)malloc(sizeof(char)*10);
         strcpy(mat->ends[i], "");
     }
-    
     //set all of mat to default -1 and ends with defalt '\0'
     for (int i=0; i<mat->size; i++){
         *(mat->mat + i) = -1;
     }
+    return mat;
+}
+
+regmat *gen_regex_matrix(char *regex, char *name){
+    char **cursor = &regex;    
+    return gen_regex_matrix_sub(cursor, name);
+}
+
+regmat *gen_regex_matrix_sub(char **cursor, char *name){
+    char *cur = *cursor;
+    regmat *mat = init_regmat(strlen(cur)+1, CHARSET_SIZE);
+    regmat *sub_mat;
+    int n;
 
     n=0;
-    cur = regex;
     while (*cur != '\0'){
         //the special character <\> used
         if (*cur == '\\'){
@@ -106,12 +117,19 @@ regmat *gen_regex_matrix(char *regex, char *name){
             // this will end a recursive call
             // note: only used in recursion level > 1
         }else if (*cur == '('){
-            //this will begin a recursive call 
+            // Plan:
+            // This will begin a recursive call.
+            // Each time that "|" is reached it is stitched between
+            // a start node and an end node (how do i put the end
+            // node after all this mess). Then once ")" is reached
+            // stitch it all to the end node. 
+            // Stitch the two parts onto the end of the original 
             
-            // call part 1 until '|' is reached
-            // call part 2 until ')' is reached 
+            // impliment:
+            // here i need it to stop at "|" & ")"
+            // also somehow advance cur 
             
-            // stitch the two parts onto the end of the original 
+            //sub_mat = gen_regex_matrix(cur, "");
             
         }else{
             //point the character in array to next unfilled node

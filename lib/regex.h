@@ -13,7 +13,12 @@ typedef struct regmat{
     char **ends;        //! 1d array of strings that are the name of the ends
 }regmat;
 
+regmat *init_regmat(int size, int char_size);
+
+
 regmat *gen_regex_matrix(char *regex, char *name);
+
+regmat *gen_regex_matrix_sub(char **cursor, char *name);
 
 //! stich one regmat into another
 /*!
