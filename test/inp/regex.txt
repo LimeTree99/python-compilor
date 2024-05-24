@@ -38,7 +38,7 @@ ba+             ba          found   found
 ba+             baaa        found   found 
 ba+             b           found   \0
 
-(a|b)           a           found   found 
+(a|b)       cat         found   found 
 (a|b)           b           found   found
 x(aa|bb)y       xaby        found   \0
 x(aa|bb)y       xaay        found   found

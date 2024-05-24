@@ -37,6 +37,7 @@ void test_gen_regex_matrix(){
 
     for (int i=0; i<test_len; i++){
         a = gen_regex_matrix(test_reg[i], test_name[i]);
+        
         result = parse_regex(a, test_str[i]);
         _log(LOG_D, "reg <%s> test str <%s> result <%s>", 
                 test_reg[i], test_str[i], result);
@@ -44,8 +45,7 @@ void test_gen_regex_matrix(){
             _log(LOG_W, "incorrect result for reg <%s> and test str <%s>", test_reg[i], test_str[i]);
             pr_regex_matrix(a);            
         }
-        
         free_regex_matrix(a);
         free(result);
-    }
+    }    
 }

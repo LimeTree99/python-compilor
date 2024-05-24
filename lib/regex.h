@@ -20,13 +20,24 @@ regmat *gen_regex_matrix(char *regex, char *name);
 
 regmat *gen_regex_matrix_sub(char **cursor, char *name);
 
+//! copy one, or part of one, regmat into another at a specifided position
+/*!
+    Copy mat2 from mat2_start to mat2_end into mat1 starting at mat1_node.
+    \param mat1 
+    \param mat2
+    \param mat1_node
+    \param mat2_start
+    \param mat2_end
+*/ 
+int copyto_regex_matrix(regmat *mat1, regmat *mat2, int mat1_node, int mat2_start, int mat2_end);
+
 //! stich one regmat into another
 /*!
-    Stitch mat2 into mat1 at node
+    Stitch mat2 into mat1 after specified node. mat2_start and mat2_end are inclusive.
     \param mat1 the matrix to be added onto
     \param mat2 the matrix to added to mat1
-    \param node the node in mat1 that mat2 will start on
-    \return Error code
+    \param node the node in mat1 that will point to the mat2 start node
+    \return debug
 */
 int stitch_regex_matrix(regmat *mat1, regmat *mat2, int node);
 

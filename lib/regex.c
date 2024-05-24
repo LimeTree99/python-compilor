@@ -55,17 +55,20 @@ regmat *init_regmat(int size, int char_size){
 
 regmat *gen_regex_matrix(char *regex, char *name){
     char **cursor = &regex;    
-    return gen_regex_matrix_sub(cursor, name);
+    regmat *re = gen_regex_matrix_sub(cursor, name);
+    return re;
 }
 
 regmat *gen_regex_matrix_sub(char **cursor, char *name){
     char *cur = *cursor;
     regmat *mat = init_regmat(strlen(cur)+1, CHARSET_SIZE);
     regmat *sub_mat;
+    bool end = false;
     int n;
 
     n=0;
-    while (*cur != '\0'){
+    while (!end && *cur != '\0'){
+        
         //the special character <\> used
         if (*cur == '\\'){
             //advance to next letter
@@ -111,12 +114,7 @@ regmat *gen_regex_matrix_sub(char **cursor, char *name){
         }else if (*cur == '+'){
             *(mat->mat + (n * mat->char_size) + *(cur-1)) = n;
             n--;
-        }else if (*cur == '|'){
-            // this will end a recursive call and return the first half 
-        }else if (*cur == ')'){
-            // this will end a recursive call
-            // note: only used in recursion level > 1
-        }else if (*cur == '('){
+        }else if (*cur == '(' || *cur == '|'){
             // Plan:
             // This will begin a recursive call.
             // Each time that "|" is reached it is stitched between
@@ -129,7 +127,22 @@ regmat *gen_regex_matrix_sub(char **cursor, char *name){
             // here i need it to stop at "|" & ")"
             // also somehow advance cur 
             
-            //sub_mat = gen_regex_matrix(cur, "");
+            cur = cur + 1;
+            *cursor = cur;
+            sub_mat = gen_regex_matrix_sub(cursor, "");
+            cur = *cursor;
+            
+            mat->size = n;
+            
+            stitch_regex_matrix(mat, sub_mat, n-1);
+            free_regex_matrix(sub_mat);
+            n--;
+            
+        }else if (*cur == ')'){
+            // this will end a recursive call
+            // note: only used in recursion level > 1
+            end = true;
+            n--;
             
         }else{
             //point the character in array to next unfilled node
@@ -139,15 +152,56 @@ regmat *gen_regex_matrix_sub(char **cursor, char *name){
         n++;
     }
     
+    printf("in: <%s>\n", *cursor);
     free(mat->ends[n]);
     mat->ends[n] = (char*)malloc(sizeof(char) * (strlen(name) + 1));
     strcpy(mat->ends[n], name);
-
+    mat->size = n+1;
+    pr_regex_matrix(mat);
     return mat;
+}
+int copyto_regex_matrix(regmat *mat1, regmat *mat2, int mat1_node, int mat2_start, int mat2_end){
+    int points;
+    for (int y=0; y<mat2_end+1-mat2_start; y++){
+        for (int x=0;x<mat1->char_size; x++){
+            points = *(mat2->mat + ((y+mat2_start) * mat2->char_size) + x);
+            if (points != -1){
+                points += mat1_node;
+                *(mat1->mat + ((y+mat1_node) * mat1->char_size) + x) = points;
+            }
+        }
+        
+        if (**(mat2->ends+y+mat2_start) != '\0'){
+            free(*(mat1->ends+y+mat1_node));
+            *(mat1->ends+y+mat1_node) = (char*)malloc(sizeof(char) * (strlen(*(mat2->ends+y+mat2_start)) + 1));
+            strcpy(*(mat1->ends+y+mat1_node), *(mat2->ends+y+mat2_start));
+            
+        }
+    }
+    return 0;
 }
 
 int stitch_regex_matrix(regmat *mat1, regmat *mat2, int node){
+    regmat *new_mat = init_regmat(mat1->num_nodes + mat2->num_nodes, CHARSET_SIZE);
+
+    printf("1 node: %d, 2 start: %d, 2 end: %d\n", 0, 0, node);    
+    copyto_regex_matrix(new_mat, mat1, 0, 0, node);
+    pr_regex_matrix(new_mat);
     
+    printf("1 node: %d, 2 start: %d, 2 end: %d\n", node+1, 0, mat2->size-1);
+    copyto_regex_matrix(new_mat, mat2, node+1, 0, mat2->size-1);
+    pr_regex_matrix(new_mat);
+    
+    printf("1 node: %d, 2 start: %d, 2 end: %d\n", node+1+mat2->size, node+1, mat1->size-1);
+    copyto_regex_matrix(new_mat, mat1, node+1+mat2->size, node+1, mat1->size-1);
+    
+    free_regex_matrix(mat1);
+    *mat1 = *new_mat;
+    
+    printf("submat:\n");
+    pr_regex_matrix(mat1);
+    
+    return 0;
 }
 
 char *parse_regex(regmat *mat, char *str){
@@ -189,9 +243,11 @@ void pr_regex_matrix(regmat *mat){
 
 void free_regex_matrix(regmat *mat){
     for (int i=0; i<mat->num_nodes; i++){
-        free(mat->ends[i]);
+        free( *(mat->ends+i));
     }
     free(mat->ends);
     free(mat->mat);
-    free(mat);
+    
+    // this will crash the program. Why??? I don't think mat is being properly freed
+    //free(mat);  
 }
