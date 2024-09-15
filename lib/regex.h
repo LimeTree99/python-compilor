@@ -31,6 +31,14 @@ regmat *gen_regex_matrix_sub(char **cursor, char *name);
 */ 
 int copyto_regex_matrix(regmat *mat1, regmat *mat2, int mat1_node, int mat2_start, int mat2_end);
 
+//! make all elements of a node point to a new node
+/*!
+    \param mat
+    \param node the node that's elemets will be changed
+    \param point_to the new node that all elemets of node will point to 
+*/
+int point_node_to(regmat *mat, int node, int point_to);
+
 //! stich one regmat into another
 /*!
     Stitch mat2 into mat1 after specified node. mat2_start and mat2_end are inclusive.

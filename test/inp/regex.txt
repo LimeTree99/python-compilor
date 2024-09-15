@@ -38,8 +38,9 @@ ba+             ba          found   found
 ba+             baaa        found   found 
 ba+             b           found   \0
 
-(a|b)       cat         found   found 
+(cat|dog)       cat         found   found
 (a|b)           b           found   found
 x(aa|bb)y       xaby        found   \0
+(a|b)           a           found   found
+x(aa|bbbbbbb)y  xaay        found   found
 x(aa|bb)y       xaay        found   found
-x(aa|bb)y       xy          found   \0

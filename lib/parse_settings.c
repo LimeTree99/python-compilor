@@ -133,7 +133,6 @@ datafrm *imp_testf(char file_name[], const char *delin){
                     column++;
                 }else{
                     //reset for next row
-                    //*(re->columns + column) = (char**)malloc(sizeof(char*) * re->width);
                     row++;
                     column = 0;
                 }
